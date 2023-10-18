@@ -127,16 +127,16 @@ def generate(data, formats, number_of_docs, samples_dir, is_image, out):
 			write.write_jpg(out, idx)
 			with open(f'{out}/json/{idx}.json', 'r') as f:
 				data_json = json.load(f)
-			
-			for entity in data_json['Images'].keys():
-				page_num = data_json['Images'][entity]['page_num']
-				img = cv2.imread(f'{out}/jpg/{idx}.pdf_dir/{page_num}_{idx}.pdf.jpg')
-				coords = data_json['Images'][entity]['coords']
-# 				print(coords)
-				cv2.rectangle(img, coords[0], coords[1], (255, 0, 0), 5)
-				cv2.putText(img, entity, (coords[0][0], coords[0][1]-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 5) 
+			# Нарисовать разметку изображений
+# 			for entity in data_json['Images'].keys():
+# 				page_num = data_json['Images'][entity]['page_num']
+# 				img = cv2.imread(f'{out}/jpg/{idx}.pdf_dir/{page_num}_{idx}.pdf.jpg')
+# 				coords = data_json['Images'][entity]['coords']
+# # 				print(coords)
+# 				cv2.rectangle(img, coords[0], coords[1], (255, 0, 0), 5)
+# 				cv2.putText(img, entity, (coords[0][0], coords[0][1]-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 5) 
 
-				cv2.imwrite(f'{out}/jpg/{idx}.pdf_dir/{page_num}_{idx}.pdf.jpg', img)
+# 				cv2.imwrite(f'{out}/jpg/{idx}.pdf_dir/{page_num}_{idx}.pdf.jpg', img)
 
 def get_args():
 	parser = argparse.ArgumentParser(

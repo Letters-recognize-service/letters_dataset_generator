@@ -9,6 +9,7 @@ from os import makedirs, listdir
 import re
 from time import time
 import json
+import cv2
 
 from loguru import logger
 
@@ -56,9 +57,9 @@ def generate(data, formats, number_of_docs, samples_dir, is_image, out):
 
 	for idx in range(int(number_of_docs)):
 		# название организации в шапке (кто инициатор), data[0][0] - название самого предприятия
-		header = data[0][0]
+		header = data[0][0] # детерминированный?
 		# тип документа. для хакатона два типа "Приказ по предприятию" (data[1][0]) и "Распоряжение по отделу" (data[1][1])
-		name = data[1][0]
+		name = data[1][0] # детерминированный?
 		# на будущее - генерировать intro генеративными сетями
 		intro = choice(data[2])
 		
@@ -124,7 +125,18 @@ def generate(data, formats, number_of_docs, samples_dir, is_image, out):
 
 		if 'j' in formats:
 			write.write_jpg(out, idx)
+			with open(f'{out}/json/{idx}.json', 'r') as f:
+				data_json = json.load(f)
+			
+			for entity in data_json['Images'].keys():
+				page_num = data_json['Images'][entity]['page_num']
+				img = cv2.imread(f'{out}/jpg/{idx}.pdf_dir/{page_num}_{idx}.pdf.jpg')
+				coords = data_json['Images'][entity]['coords']
+# 				print(coords)
+				cv2.rectangle(img, coords[0], coords[1], (255, 0, 0), 5)
+				cv2.putText(img, entity, (coords[0][0], coords[0][1]-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 5) 
 
+				cv2.imwrite(f'{out}/jpg/{idx}.pdf_dir/{page_num}_{idx}.pdf.jpg', img)
 
 def get_args():
 	parser = argparse.ArgumentParser(

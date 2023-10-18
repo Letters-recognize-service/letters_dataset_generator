@@ -171,7 +171,7 @@ def PDFunits_to_px(units, dpi=300):
 	mm = inch * 25.4
 	return mm_to_px(mm, dpi)
 
-def calculate_logo_coords():
+def calculate_logo_coords(): # Всегда одинаковые?
 	logo_coords = []
 	logo_coords.append([int(mm_to_px(consts.left_margin.mm)) - consts.logo_offset,
 		int(mm_to_px(consts.top_margin.mm)) - consts.logo_offset])

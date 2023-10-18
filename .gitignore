@@ -1,4 +1,6 @@
+.ipynb_checkpoints/
+letters_gen/
+letters_test.ipynb
+results/
 __pycache__/
-decrees/
 logs/
-venv/

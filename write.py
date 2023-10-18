@@ -177,7 +177,7 @@ def extract_tm(pdf_path, page_num):
 	tmx = tmx[-1]
 	tmy = tmy[-1]
 
-	return (tmx, tmy, len(page.images))
+	return (tmx, tmy, len(page.images), len(reader.pages) + page_num) # page_num = {-1, -2} поэтому +
 
 def write_coords(json_path, pdf_path, data, is_image=False):
 
@@ -190,9 +190,10 @@ def write_coords(json_path, pdf_path, data, is_image=False):
 		logo_coords = auxil.calculate_logo_coords()
 
 		# Координаты подписи
-		(tmx, tmy, im_count) = extract_tm(pdf_path, -1)
+		(tmx, tmy, im_count, seal_page_num) = extract_tm(pdf_path, -1)
 
 		if im_count >= 2: # Если на последней странице есть подпись и печать
+			sign_page_num = seal_page_num
 
 			if (tmx == 0) or (tmy == 0): # Если на странице только подпись и печать
 				sign_coords = auxil.calculate_sign_coords(tmx, tmy, new_page=True)
@@ -201,7 +202,7 @@ def write_coords(json_path, pdf_path, data, is_image=False):
 				sign_coords = auxil.calculate_sign_coords(tmx, tmy)
 
 		else: # Если на последней странице только печать
-			(tmx, tmy, _) = extract_tm(pdf_path, -2)
+			(tmx, tmy, _, sign_page_num) = extract_tm(pdf_path, -2)
 			sign_coords = auxil.calculate_sign_coords(tmx, tmy)
 
 		# Координаты печати
@@ -212,9 +213,12 @@ def write_coords(json_path, pdf_path, data, is_image=False):
 			seal_coords = auxil.calculate_seal_coords([], new_page=True)
 		
 		json_dict["Images"] = {}
-		json_dict["Images"]["logo_coordinates"] = logo_coords
-		json_dict["Images"]["signature_coordinates"] = sign_coords
-		json_dict["Images"]["seal_coordinates"] = seal_coords
+		json_dict["Images"]["logo"] = {"coords": logo_coords,
+                                       "page_num": 0}
+		json_dict["Images"]["signature"] = {"coords": sign_coords,
+                                            "page_num": sign_page_num}
+		json_dict["Images"]["seal"] = {"coords": seal_coords,
+                                                   "page_num": seal_page_num}
 
 	text_coords = auxil.calculate_text_coords(pdf_path, data)
 	json_dict["Text"] = {}

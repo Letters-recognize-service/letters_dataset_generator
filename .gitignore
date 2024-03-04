@@ -4,3 +4,6 @@ letters_test.ipynb
 results/
 __pycache__/
 logs/
+letters_gen_venv/
+letters_out/
+latex_letters/
